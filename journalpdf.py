@@ -24,27 +24,19 @@ def unquotefileDOI(doi):
 	return urllib2.unquote(doi.replace('@','/'))
 
 def maxissn(issns):
-	maxpre=0
-	maxsuf=0
+	maxissn="0000-0000"
 	maxnum=0
 	for i in range(len(issns)):
-		tmp=issns[i].split('-')
-		if (int(tmp[0])>maxpre):
-			maxpre=int(tmp[0])
-			maxsuf=int(tmp[1])
-			maxnum=i
-			continue
-		elif(int(tmp[0]) == maxpre and int(tmp[1]) >maxsuf):
-			maxpre=int(tmp[0])
-			maxsuf=int(tmp[1])
+		if (issns[i] > maxissn):
+			maxissn=issns[i]
 			maxnum=i
 			continue
 	return issns[maxnum]
 
 
 def getpdfdir(doi):
-	'''Get only the larger issn, should normal doi'''
-	try:
+		'''Get only the larger issn, should normal doi'''
+	#try:
 		r=urllib2.urlopen('https://api.crossref.org/works/'+doi)
 		j=json.loads(r.read())
 		item=j['message']
@@ -52,8 +44,8 @@ def getpdfdir(doi):
 		issue=item.get('issue','0')
 		issn=maxissn(item.get('ISSN',['9999-9999']))
 		return issn+os.sep+volume+os.sep+issue+os.sep
-	except:
-		return ""
+	#except:
+	#	return ""
 	
 for f in glob.iglob('10.*/10.*.pdf'):
 	paths=os.path.split(f)
